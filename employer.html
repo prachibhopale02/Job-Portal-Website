@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Employer Dashboard - Post Job</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header><img src="images/logo.png" alt="Logo"><h1>Employer Dashboard</h1></header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="jobs.html">Jobs</a>
+    <a href="login.html">Logout</a>
+  </nav>
+
+  <main>
+    <h2>Post a New Job</h2>
+    <form id="job-form" class="card">
+      <label>Job Title:</label><br />
+      <input type="text" id="title" required /><br /><br />
+      <label>Description:</label><br />
+      <textarea id="description" rows="5" required></textarea><br /><br />
+      <label>Employer ID:</label><br />
+      <input type="number" id="employer_id" required /><br /><br />
+      <button type="submit">Submit Job</button>
+    </form>
+    <p id="post-response"></p>
+  </main>
+
+  <script>
+    document.getElementById("job-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const job = {
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        employer_id: document.getElementById("employer_id").value
+      };
+
+      fetch("/api/jobs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(job)
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("post-response").textContent = data.message;
+        document.getElementById("job-form").reset();
+      })
+      .catch(err => {
+        document.getElementById("post-response").textContent = "Error posting job.";
+        console.error(err);
+      });
+    });
+  </script>
+</body>
+</html>

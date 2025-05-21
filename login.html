@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - Job Portal</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body >
+  <header><img src="images/logo.png" alt="Logo"><h1>Job Portal</h1></header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="register.html">Register</a>
+  </nav>
+  <main>
+    <h2>Login</h2>
+    <form id="login-form" class="card">
+      <label>Username:</label><br />
+      <input type="text" id="username" required /><br /><br />
+      <label>Password:</label><br />
+      <input type="password" id="password" required /><br /><br />
+      <button type="submit">Login</button>
+    </form>
+    <p id="login-response"></p>
+  </main>
+
+  <script>
+    document.getElementById("login-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) {
+          document.getElementById("login-response").textContent = "Login successful!";
+          if (data.user.role === "admin") location.href = "admin.html";
+          else if (data.user.role === "employer") location.href = "employer.html";
+          else location.href = "jobs.html";
+        } else {
+          document.getElementById("login-response").textContent = "Invalid login";
+        }
+      });
+    });
+  </script>
+</body>
+</html>

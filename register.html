@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register - Job Portal</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header><img src="images/logo.png" alt="Logo"><h1>Job Portal</h1></header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+  </nav>
+  <main>
+    <h2>Register</h2>
+    <form id="register-form" class="card">
+      <label>Username:</label><br />
+      <input type="text" id="username" required /><br /><br />
+      <label>Password:</label><br />
+      <input type="password" id="password" required /><br /><br />
+      <label>Role:</label><br />
+      <select id="role" required>
+        <option value="">Select</option>
+        <option value="seeker">Job Seeker</option>
+        <option value="employer">Employer</option>
+      </select><br /><br />
+      <button type="submit">Register</button>
+    </form>
+    <p id="register-response"></p>
+  </main>
+
+  <script>
+    document.getElementById("register-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value,
+          role: document.getElementById("role").value
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("register-response").textContent = data.message;
+      });
+    });
+  </script>
+</body>
+</html>

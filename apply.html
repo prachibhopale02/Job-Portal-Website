@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Apply for Job - Job Portal</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header><img src="images/logo.png" alt="Logo"><h1>Job Portal</h1></header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="jobs.html">Jobs</a>
+    <a href="login.html">Login</a>
+    <a href="register.html">Register</a>
+  </nav>
+  <main>
+    <h2>Apply for Job</h2>
+    <form id="apply-form" class="card">
+      <input type="hidden" id="job_id" />
+      <label>Name:</label><br />
+      <input type="text" id="name" required /><br /><br />
+      <label>Email:</label><br />
+      <input type="email" id="email" required /><br /><br />
+      <label>Resume:</label><br />
+      <textarea id="resume" rows="5" required></textarea><br /><br />
+      <button type="submit">Submit Application</button>
+    </form>
+    <p id="response-message"></p>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const jobId = params.get("job_id");
+    document.getElementById("job_id").value = jobId;
+
+    document.getElementById("apply-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const app = {
+        job_id: jobId,
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        resume: document.getElementById("resume").value
+      };
+
+      fetch("/api/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(app)
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("response-message").textContent = data.message;
+        document.getElementById("apply-form").reset();
+      });
+    });
+  </script>
+</body>
+</html>
